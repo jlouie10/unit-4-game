@@ -1,67 +1,56 @@
 // Declare variables
-var you = "";
-var globalChoice = 1;
-var character = {
-    list: {
-        ironman: {
-            name: "Iron Man",
-            stats: {
-                health: 100,
-                attack: 10,
-                counter: 15,
-                experience: 2
-            },
-            role: "none", // { none, avenger, villain }
-            active: false
-        },
-        captainAmerica: {
-            name: "Captain America",
-            stats: {
-                health: 75,
-                attack: 15,
-                counter: 5,
-                experience: 1,
-            },
-            role: "none",
-            active: false
+var game = {
+    status: "start",
+    difficulty: "easy",
+    round: 1,
+    player: {
+        id: "",
+        name: "",
+        stats: {
+            health: 0,
+            attack: 0
         }
     },
-    choose: function () { // Method for choosing your character
-        var option = globalChoice;
-        var choice = "";
-
-        if (option === 1) {
-            choice = "ironman";
-            you = character.list[choice];
+    computer: {
+        id: "",
+        name: "",
+        stats: {
+            health: 0
         }
-        else {
-            choice = "captainAmerica";
-            you = character.list[choice];
-        }
-
-        you.active = true;
-
-        this.assignRoles(choice);
     },
-    assignRoles: function(yourChoice) { // Method for assigning roles to all characters
-        var keys = Object.keys(this.list);
+    defeated: [],
+    new: function () {
 
-        for (i = 0; i < keys.length; i++) {
-            if (keys[i] === yourChoice) {
-                
-                // Assign your role as Avenger
-                you.role = "avenger";
-            }
-            else {
-
-                // Assign all other characters as villains
-                character.list[keys[i]].role = "villain";
-            }
-        }
     }
 }
 
-character.choose();
+game.status = "select hero";
 
-console.log(you);
-console.log(character.list);
+// This function is run whenever user clicks a hero
+$(".hero").on("click", function () {
+
+    if (game.status === "select hero") {
+        game.player.id = $(this).attr("data-value");
+        character.choose("player", game.player.id);
+        game.status = "select opponent";
+    }
+    else if (game.status === "select opponent") {
+
+        // Make sure a different hero is chosen as the opponent
+        if (game.player.id !== $(this).attr("data-value")) {
+            game.computer.id = $(this).attr("data-value");
+            character.choose("opponent", game.computer.id);
+            game.status = "match in progress";
+        }
+    }
+});
+
+$(".action").on("click", function () {
+    if (game.status === "match in progress") {
+        character.action();
+    }
+
+    console.log(game);
+    // console.log(you);
+    // console.log(opponent);
+});
