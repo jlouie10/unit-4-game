@@ -1,0 +1,29 @@
+.hero {
+    height: 200px;
+    width: 200px;
+    text-align: center;
+}
+
+.hero span {
+    line-height: 200px;
+}
+
+#ironman {
+    background-color: red;
+    color: #fff;
+}
+
+#captain-america {
+    background-color: blue;
+    color: #fff;
+}
+
+#spiderman {
+    background-color: black;
+    color: #fff;
+}
+
+#hulk {
+    background-color: green;
+    color: #fff;
+}

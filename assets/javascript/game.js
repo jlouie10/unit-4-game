@@ -9,7 +9,6 @@ var game = {
             this.defeated[this.round - 1] = id;
             this.champion();
             this.round++;
-            this.status = "select opponent"; // State needs to be created
 
             console.log("Won");
 
@@ -114,6 +113,9 @@ var player = {
         this.stats.attack += this.stats.experience;
 
         return currentAttack;
+    },
+    reset: function(characterProfile) {
+        this.stats.health = characterProfile.stats.health;
     }
 };
 
@@ -176,7 +178,11 @@ $(".action").on("click", function () {
 
         winConditions = game.win(opponent.id, opponent.stats.health);
 
-        if (winConditions === false) {
+        if (winConditions === true) {
+            player.reset(characters.list[player.id]);
+            game.status = "select opponent"; // State needs to be created
+        }
+        else {
             player.stats.health -= opponent.stats.counter; // Add limit so health cannot be < 0
 
             if (player.stats.health <= 0) {
