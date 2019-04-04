@@ -1,199 +1,265 @@
-// Declare variables
-var game = {
-    status: "start",
-    difficulty: "easy",
-    round: 1,
-    defeated: [],
-    win: function(id, health) {
-        if (health <= 0) {
-            this.defeated[this.round - 1] = id;
-            this.champion();
-            this.round++;
+$(document).ready(function () {
+    // *********************
+    // * Declare variables *
+    // *********************
 
-            console.log("Won");
-
-            return true;
-        }
-        else {
-            return false;
-        }
-    },
-    champion: function() {
-        if (this.round === this.defeated.length) {
-            console.log("You have won the Infinity Gauntlet")
-        }
-    }
-}
-
-var characters = {
-    list: {
-        ironman: {
-            name: "Iron Man",
-            stats: {
-                health: 100,
-                attack: 10,
-                counter: 15,
-                experience: 2
-            },
-            role: "none", // { none, avenger, villain }
-            active: false
+    var game = {
+        status: "select player character", // character selection: [ select player character, select opponent ]
+        mode: "easy", // Use for expansion
+        round: 1, // Tracks place in gauntlet
+        defeated: [], // List of defeated opponents
+        initialize: function () {
         },
-        captainAmerica: {
-            name: "Captain America",
-            stats: {
-                health: 75,
-                attack: 15,
-                counter: 5,
-                experience: 1,
-            },
-            role: "none",
-            active: false
-        },
-        spiderman: {
-            name: "Spider Man",
-            stats: {
-                health: 50,
-                attack: 5,
-                counter: 15,
-                experience: 5,
-            },
-            role: "none",
-            active: false
-        },
-        hulk: {
-            name: "Hulk",
-            stats: {
-                health: 200,
-                attack: 20,
-                counter: 10,
-                experience: 1,
-            },
-            role: "none",
-            active: false
-        }
-    },
-    activate: function (input) { // Method for choosing your character
-        this.list[input].active = true;
-    },
-    assignRoles: function (input) { // Method for assigning roles to all characters
-        var keys = Object.keys(this.list);
+        determineWin: function (id, health) { // Method for determining a player win
+            if (health <= 0) {
+                this.defeated[this.round - 1] = id;
 
-        for (i = 0; i < keys.length; i++) {
-            if (keys[i] === input) {
+                if (this.defeated.length === 3) { // This should be a calculated value
+                    this.status = "game over";
+                    console.log("You have won the Infinity Gauntlet")
+                }
 
-                // Assign your role as Avenger
-                this.list[keys[i]].role = "avenger";
+                this.round++;
+
+                console.log("Won");
+
+                return true;
             }
             else {
-
-                // Assign all other characters as villains
-                this.list[keys[i]].role = "villain";
+                return false;
             }
         }
-    }
-};
+    };
 
-var player = {
-    id: "",
-    name: "",
-    stats: {
-        health: 0,
-        attack: 0,
-        counter: 0,
-        experience: 0
-    },
-    select: function(input, characterProfile) {
-        this.id = input;
-        this.name = characterProfile.name;
-        this.stats.health = characterProfile.stats.health;
-        this.stats.attack = characterProfile.stats.attack;
-    },
-    attackOpponent: function() {
-        currentAttack = this.stats.attack;
-        this.stats.attack += this.stats.experience;
+    var display = {
+        status: "character selection", // [ character selection, arena, credits ]
+        selectionScreen: function (total, html1, html2, html3, html4) { // Method for displaying the character selection screen
+            var title = "<div class='row'><div class='col-12'><span class='label'>Character Select Area</span></div></div>";
+            var characterMenu = "<div class='row'><div id='pos-1' class='col-3'></div><div id='pos-2' class='col-3'></div><div id='pos-3' class='col-3'></div><div id='pos-4' class='col-3'></div></div>";
+            var html = [html1, html2, html3, html4];
+            var i;
 
-        return currentAttack;
-    },
-    reset: function(characterProfile) {
-        this.stats.health = characterProfile.stats.health;
-    }
-};
+            $("#arena").empty();
 
-var opponent = {
-    id: "",
-    name: "",
-    stats: {
-        health: 0,
-        attack: 0,
-        counter: 0,
-        experience: 0
-    },
-    select: function(input, characterProfile) {
-        this.id = input;
-        this.name = characterProfile.name;
-        this.stats.health = characterProfile.stats.health;
-        this.stats.counter = characterProfile.stats.counter;
-    },
-    counterAttack: function() {
-        currentCounter = this.stats.counter;
-    }
-}
+            $("#character-select").append(title);
+            $("#character-select").append(characterMenu);
 
-game.status = "select player character";
+            for (i = 1; i <= total; i++) {
+                var startString = "pos-";
+                var endString = "#" + startString + i;
 
-// This function is run whenever user clicks a hero
-$(".hero").on("click", function () {
+                $(endString).append(html[i-1]);
+            }
+        },
+        arena: function () { // Method for displaying the arena screen
+            $("#character-select").empty();
+        },
+        credits: function () { // Method for displaying the credits screen
+            
+        }
+    };
 
-    var input = $(this).attr("data-value");
+    var characters = {
+        list: { // List of playable characters
+            ironman: {
+                name: "Iron Man",
+                stats: {
+                    health: 100,
+                    attackPower: 10,
+                    counterAttackPower: 15,
+                    experience: 2
+                },
+                role: "none", // { none, avenger, villain }
+                active: false,
+                html: function () {
+                    var frame = "<div id='ironman' class='hero' data-value='ironman'><span>Iron Man</span></div>";
 
-    // Selects player character and opponent only once
-    if (game.status === "select player character") {
-        
-        player.select(input, characters.list[input]);
-        characters.activate(input);
-        characters.assignRoles(input);
-        game.status = "select opponent";
-        console.log(player);
-    }
-    else if (game.status === "select opponent") {
-        opponent.select(input, characters.list[input]);
-        characters.activate(input);
-        game.status = "match start";
-        console.log(opponent);
-    }
-    else {
-        console.log("Character select failed");
-    }
+                    return frame;
+                }
+            },
+            captainAmerica: {
+                name: "Captain America",
+                stats: {
+                    health: 75,
+                    attackPower: 15,
+                    counterAttackPower: 5,
+                    experience: 1,
+                },
+                role: "none",
+                active: false,
+                html: function () {
+                    var frame = "<div id='captain-america' class='hero' data-value='captainAmerica'><span>Captain America</span></div>";
 
-    if (game.status === "match start") {
-        game.status = "match in progress";
-    }
+                    return frame;
+                }
+            },
+            spiderman: {
+                name: "Spider Man",
+                stats: {
+                    health: 50,
+                    attackPower: 5,
+                    counterAttackPower: 15,
+                    experience: 5,
+                },
+                role: "none",
+                active: false,
+                html: function () {
+                    var frame = "<div id='spiderman' class='hero' data-value='spiderman'><span>Spider Man</span></div>";
 
-    console.log(characters);
-});
+                    return frame;
+                }
+            },
+            hulk: {
+                name: "Hulk",
+                stats: {
+                    health: 200,
+                    attackPower: 20,
+                    counterAttackPower: 10,
+                    experience: 1,
+                },
+                role: "none",
+                active: false,
+                html: function () {
+                    var frame = "<div id='hulk' class='hero' data-value='hulk'><span>Hulk</span></div>";
 
-$(".action").on("click", function () {
-    if (game.status === "match in progress") {
-        opponent.stats.health -= player.attackOpponent(); // Add limit so health cannot be < 0
+                    return frame;
+                }
+            }
+        },
+        getTotal: function () { // Method for calculating total characters 
+            var keys = Object.keys(this.list);
 
-        winConditions = game.win(opponent.id, opponent.stats.health);
+            return keys.length;
+        },
+        activate: function (input) { // Method for activating a character, activated characters appear in the arena
+            this.list[input].active = true;
+        },
+        assignRoles: function (input) { // Method for assigning roles to all characters
+            var keys = Object.keys(this.list);
+            var i;
 
-        if (winConditions === true) {
-            player.reset(characters.list[player.id]);
-            game.status = "select opponent"; // State needs to be created
+            for (i = 0; i < keys.length; i++) {
+                if (keys[i] === input) {
+
+                    // Assign your role as Avenger
+                    this.list[keys[i]].role = "avenger";
+                }
+                else {
+
+                    // Assign all other characters as villains
+                    this.list[keys[i]].role = "villain";
+                }
+            }
+        }
+    };
+
+    var player = {
+        id: "",
+        name: "",
+        stats: {
+            health: 0,
+            attackPower: 0,
+            counterAttackPower: 0,
+            experience: 0
+        },
+        select: function (input, profile) { // Method to assign a character to player
+            this.id = input;
+            this.name = profile.name;
+            this.stats.health = profile.stats.health;
+            this.stats.attackPower = profile.stats.attackPower;
+        },
+        attack: function () { // Method to attack opponent
+            var currentAttack = this.stats.attackPower;
+            this.stats.attackPower += this.stats.experience;
+
+            return currentAttack;
+        },
+        reset: function (profile) { // Method to restore health when a round is won
+            this.stats.health = profile.stats.health;
+        }
+    };
+
+    var opponent = {
+        id: "",
+        name: "",
+        stats: {
+            health: 0,
+            attackPower: 0,
+            counterAttackPower: 0,
+            experience: 0
+        },
+        select: function (input, profile) { // Method to assign a character to opponent
+            this.id = input;
+            this.name = profile.name;
+            this.statshealth = profile.stats.health;
+            this.stats.counterAttackPower = profile.stats.counterAttackPower;
+        },
+    };
+
+    // *********************
+    // * Execute Functions *
+    // *********************
+
+    display.selectionScreen(characters.getTotal(), characters.list.ironman.html, characters.list.captainAmerica.html, characters.list.spiderman.html, characters.list.hulk.html); // Need to abstract inputs
+
+    // *****************
+    // * Define events *
+    // *****************
+
+    // This function is run whenever player clicks a hero
+    $(".hero").on("click", function () {
+
+        var input = $(this).attr("data-value");
+
+        // Selects player character and opponent only once
+        if (game.status === "select player character") {
+
+            player.select(input, characters.list[input]);
+            characters.activate(input);
+            characters.assignRoles(input);
+            game.status = "select opponent";
+
+            console.log(player);
+        }
+        else if (game.status === "select opponent") {
+            opponent.select(input, characters.list[input]);
+            characters.activate(input);
+            game.status = "play match";
+
+            console.log(opponent);
         }
         else {
-            player.stats.health -= opponent.stats.counter; // Add limit so health cannot be < 0
-
-            if (player.stats.health <= 0) {
-                game.status = "defeated";
-
-                console.log("Defeated");
-            }
+            console.log("Character select failed");
         }
-        
-        console.log(player.name + " HP: " + player.stats.health);
-        console.log(opponent.name + " HP: " + opponent.stats.health);
-        console.log(game);
-    }
+
+        console.log(characters);
+    });
+
+    // This function is run whenever player clicks attack
+    $(".action").on("click", function () {
+
+        // Only execute contents during a match, probably redundant with display.arena()
+        if (game.status === "play match") {
+            opponent.stats.health -= player.attack(); // Add limit so health cannot be < 0
+            winConditions = game.determineWin(opponent.id, opponent.stats.health);
+
+            if (winConditions === true) {
+                player.reset(characters.list[player.id]);
+                game.status = "select opponent";
+            }
+            else {
+                player.stats.health -= opponent.stats.counterAttackPower; // Add limit so health cannot be < 0
+
+                if (player.stats.health <= 0) {
+                    game.status = "game over";
+
+                    console.log("Defeated");
+                }
+            }
+
+            console.log(player.name + " HP: " + player.stats.health);
+            console.log(opponent.name + " HP: " + opponent.stats.health);
+            console.log(game);
+        }
+    });
 });
