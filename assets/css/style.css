@@ -1,7 +1,16 @@
+.show {
+    display: block;
+}
+
+.hide {
+    display: none;
+}
+
 .hero {
     height: 200px;
     width: 200px;
     text-align: center;
+    margin: 0 auto;
 }
 
 .hero span {

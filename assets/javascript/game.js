@@ -1,27 +1,30 @@
 $(document).ready(function () {
+
     // *********************
     // * Declare variables *
     // *********************
 
     var game = {
         status: "select player character", // character selection: [ select player character, select opponent ]
-        mode: "easy", // Use for expansion
-        round: 1, // Tracks place in gauntlet
-        defeated: [], // List of defeated opponents
-        initialize: function () {
-        },
-        determineWin: function (id, health) { // Method for determining a player win
+        mode: "easy",
+        round: 1,
+        defeated: [],
+        determineWin: function (id, health, numberOfCharacters) { // Method for determining a player win
             if (health <= 0) {
                 this.defeated[this.round - 1] = id;
 
-                if (this.defeated.length === 3) { // This should be a calculated value
+                if (this.defeated.length === (numberOfCharacters - 1)) {
                     this.status = "game over";
                     console.log("You have won the Infinity Gauntlet")
+                }
+                else {
+                    this.status = "select opponent";
                 }
 
                 this.round++;
 
                 console.log("Won");
+                console.log(this.status);
 
                 return true;
             }
@@ -33,33 +36,47 @@ $(document).ready(function () {
 
     var display = {
         status: "character selection", // [ character selection, arena, credits ]
-        selectionScreen: function (total, html1, html2, html3, html4) { // Method for displaying the character selection screen
-            var title = "<div class='row'><div class='col-12'><span class='label'>Character Select Area</span></div></div>";
-            var characterMenu = "<div class='row'><div id='pos-1' class='col-3'></div><div id='pos-2' class='col-3'></div><div id='pos-3' class='col-3'></div><div id='pos-4' class='col-3'></div></div>";
-            var html = [html1, html2, html3, html4];
+        initialize: function () {
+            $("#character-select").addClass("hide");
+            $("#arena").addClass("hide");
+            $("#credits").addClass("hide");
+        },
+        selectionScreen: function (characterAvatar, instance) { // Method for displaying the character selection screen
             var i;
 
-            $("#arena").empty();
+            // Initialize display
+            this.initialize();
 
-            $("#character-select").append(title);
-            $("#character-select").append(characterMenu);
+            $("#character-select").removeClass("hide");
 
-            for (i = 1; i <= total; i++) {
-                var startString = "pos-";
-                var endString = "#" + startString + i;
-
-                $(endString).append(html[i-1]);
+            // Fill the character menu
+            if (instance === 1) {
+                for (i = 1; i <= characterAvatar.length; i++) {
+                    var startString = "pos-";
+                    var endString = "#" + startString + i;
+    
+                    $(endString).html(characterAvatar[i - 1]);
+                }
             }
         },
-        arena: function () { // Method for displaying the arena screen
-            $("#character-select").empty();
+        arena: function (playerAvatar, opponentAvatar) { // Method for displaying the arena screen
+            var i;
+            
+            this.initialize();
+
+            $("#arena").removeClass("hide");
+            $("#player").html(playerAvatar);
+            $("#opponent").html(opponentAvatar);
         },
         credits: function () { // Method for displaying the credits screen
-            
+            this.initialize();
+
+            $("#credits").removeClass("hide");
+            $("#player").html("<div>Congrats, you have won the Infinity Gauntlet</div>");
         }
     };
 
-    var characters = {
+    var characters = { // Deprecate role and active
         list: { // List of playable characters
             ironman: {
                 name: "Iron Man",
@@ -71,11 +88,7 @@ $(document).ready(function () {
                 },
                 role: "none", // { none, avenger, villain }
                 active: false,
-                html: function () {
-                    var frame = "<div id='ironman' class='hero' data-value='ironman'><span>Iron Man</span></div>";
-
-                    return frame;
-                }
+                avatar: "<div id='ironman' class='hero' data-value='ironman'><span>Iron Man</span></div>"
             },
             captainAmerica: {
                 name: "Captain America",
@@ -87,11 +100,7 @@ $(document).ready(function () {
                 },
                 role: "none",
                 active: false,
-                html: function () {
-                    var frame = "<div id='captain-america' class='hero' data-value='captainAmerica'><span>Captain America</span></div>";
-
-                    return frame;
-                }
+                avatar: "<div id='captain-america' class='hero' data-value='captainAmerica'><span>Captain America</span></div>"
             },
             spiderman: {
                 name: "Spider Man",
@@ -103,11 +112,7 @@ $(document).ready(function () {
                 },
                 role: "none",
                 active: false,
-                html: function () {
-                    var frame = "<div id='spiderman' class='hero' data-value='spiderman'><span>Spider Man</span></div>";
-
-                    return frame;
-                }
+                avatar: "<div id='spiderman' class='hero' data-value='spiderman'><span>Spider Man</span></div>"
             },
             hulk: {
                 name: "Hulk",
@@ -119,17 +124,24 @@ $(document).ready(function () {
                 },
                 role: "none",
                 active: false,
-                html: function () {
-                    var frame = "<div id='hulk' class='hero' data-value='hulk'><span>Hulk</span></div>";
-
-                    return frame;
-                }
+                avatar: "<div id='hulk' class='hero' data-value='hulk'><span>Hulk</span></div>"
             }
         },
-        getTotal: function () { // Method for calculating total characters 
+        total: function () {
             var keys = Object.keys(this.list);
 
             return keys.length;
+        },
+        getAvatar: function () {
+            var keys = Object.keys(this.list);
+            var i;
+            var characterAvatar = [];
+
+            for (i = 0; i < keys.length; i++) {
+                characterAvatar[i] = this.list[keys[i]].avatar;
+            }
+
+            return characterAvatar;
         },
         activate: function (input) { // Method for activating a character, activated characters appear in the arena
             this.list[input].active = true;
@@ -162,11 +174,14 @@ $(document).ready(function () {
             counterAttackPower: 0,
             experience: 0
         },
+        avatar: "",
         select: function (input, profile) { // Method to assign a character to player
             this.id = input;
             this.name = profile.name;
             this.stats.health = profile.stats.health;
             this.stats.attackPower = profile.stats.attackPower;
+            this.stats.experience = profile.stats.experience;
+            this.avatar = profile.avatar;
         },
         attack: function () { // Method to attack opponent
             var currentAttack = this.stats.attackPower;
@@ -188,11 +203,13 @@ $(document).ready(function () {
             counterAttackPower: 0,
             experience: 0
         },
+        avatar: "",
         select: function (input, profile) { // Method to assign a character to opponent
             this.id = input;
             this.name = profile.name;
-            this.statshealth = profile.stats.health;
+            this.stats.health = profile.stats.health;
             this.stats.counterAttackPower = profile.stats.counterAttackPower;
+            this.avatar = profile.avatar;
         },
     };
 
@@ -200,7 +217,8 @@ $(document).ready(function () {
     // * Execute Functions *
     // *********************
 
-    display.selectionScreen(characters.getTotal(), characters.list.ironman.html, characters.list.captainAmerica.html, characters.list.spiderman.html, characters.list.hulk.html); // Need to abstract inputs
+    // When the page loads, display the selection screen
+    display.selectionScreen(characters.getAvatar(), 1);
 
     // *****************
     // * Define events *
@@ -208,6 +226,8 @@ $(document).ready(function () {
 
     // This function is run whenever player clicks a hero
     $(".hero").on("click", function () {
+
+        console.log("clicked");
 
         var input = $(this).attr("data-value");
 
@@ -219,33 +239,44 @@ $(document).ready(function () {
             characters.assignRoles(input);
             game.status = "select opponent";
 
-            console.log(player);
+            // console.log(player);
         }
         else if (game.status === "select opponent") {
             opponent.select(input, characters.list[input]);
             characters.activate(input);
             game.status = "play match";
 
+            display.arena(player.avatar, opponent.avatar);
+
+            // console.log(opponent);
+            console.log(player);
             console.log(opponent);
         }
         else {
             console.log("Character select failed");
         }
 
-        console.log(characters);
+        // console.log(characters);
     });
 
     // This function is run whenever player clicks attack
     $(".action").on("click", function () {
 
-        // Only execute contents during a match, probably redundant with display.arena()
+        // Only execute contents during a match
         if (game.status === "play match") {
             opponent.stats.health -= player.attack(); // Add limit so health cannot be < 0
-            winConditions = game.determineWin(opponent.id, opponent.stats.health);
+            winConditions = game.determineWin(opponent.id, opponent.stats.health, characters.total());
 
             if (winConditions === true) {
                 player.reset(characters.list[player.id]);
-                game.status = "select opponent";
+
+                if (game.status === "game over") {
+                    display.credits();
+                }
+                else {
+                    game.status = "select opponent";
+                    display.selectionScreen(characters.getAvatar(), 2);   
+                }
             }
             else {
                 player.stats.health -= opponent.stats.counterAttackPower; // Add limit so health cannot be < 0
@@ -257,9 +288,12 @@ $(document).ready(function () {
                 }
             }
 
-            console.log(player.name + " HP: " + player.stats.health);
-            console.log(opponent.name + " HP: " + opponent.stats.health);
-            console.log(game);
+            console.log(player);
+            console.log(opponent);
+
+            // console.log(player.name + " HP: " + player.stats.health);
+            // console.log(opponent.name + " HP: " + opponent.stats.health);
+            // console.log(game);
         }
     });
 });

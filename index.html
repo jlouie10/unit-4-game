@@ -29,53 +29,42 @@
 
 <body>
   <div id="character-select" class="container">
-    <!-- <div class="row">
+    <div class="row">
       <div class="col-12">
         <span class="label">Character Select Area</span>
       </div>
-    </div> -->
-    <!-- <div class="row">
-      <div id="insert" class="col-3">
-        <div id="ironman" class="hero" data-value="ironman">
-            <span>Iron Man</span>
-        </div>
-      </div>
-      <div class="col-3">
-        <div id="captain-america" class="hero" data-value="captainAmerica" >
-            <span>Captain America</span>
-        </div>
-      </div>
-      <div class="col-3">
-        <div id="spiderman" class="hero" data-value="spiderman">
-            <span>Spider Man</span>
-        </div>
-      </div>
-      <div class="col-3">
-        <div id="hulk" class="hero" data-value="hulk">
-            <span>Hulk</span>
-        </div>
-      </div>
-    </div> -->
+    </div>
+    <div class='row'>
+      <div id='pos-1' class='col-3'></div>
+      <div id='pos-2' class='col-3'></div>
+      <div id='pos-3' class='col-3'></div>
+      <div id='pos-4' class='col-3'></div>
+    </div>
   </div>
-<div id="arena" class="container">
-  <div class="row">
-    <div class="col-12">
+  <div id="arena" class="container hide">
+    <div class="row">
+      <div class="col-12">
         <span class="label">Arena</span>
+      </div>
+    </div>
+    <div class="row">
+      <div id="player" class="col-6">
+      </div>
+      <div id="opponent" class="col-6">
+      </div>
+    </div>
+    <div class="row">
+        <div class="col-6">
+            <button class="action" data-value="attack">Attack</button>
+        </div>
     </div>
   </div>
-  <div class="row">
-    <div class="col-6">
-      <span id="player"></span>
+  <div id="credits" class="container hide">
+    <div class="row">
+      <div class="col-12">
+        <span class="label">Credits</span>
+      </div>
     </div>
-    <div class="col-6">
-      <span id="opponent"></span>
-    </div>
-  </div>
-</div>
-  
-
-  <div>
-    <span class="action" data-value="attack">Attack</span>
   </div>
 
   <!-- JavaScript -->
