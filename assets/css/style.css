@@ -13,26 +13,40 @@
     margin: 0 auto;
 }
 
+.remove {
+    opacity: 0.4;
+}
+
 .hero span {
     line-height: 200px;
 }
 
+.hero img {
+    box-shadow: 0 13px 27px -5px rgba(50,50,93,.25), 0 8px 16px -8px rgba(0,0,0,.3), 0 -6px 16px -6px rgba(0,0,0,.025);
+    border-radius: 12px;
+}
+
 #ironman {
-    background-color: red;
+    /* background-color: red; */
     color: #fff;
 }
 
 #captain-america {
-    background-color: blue;
+    /* background-color: blue; */
     color: #fff;
 }
 
 #spiderman {
-    background-color: black;
+    /* background-color: black; */
     color: #fff;
 }
 
 #hulk {
-    background-color: green;
+    /* background-color: green; */
     color: #fff;
+}
+
+#player-hp, #opponent-hp {
+    position: absolute;
+    bottom: 0;
 }

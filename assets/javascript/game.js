@@ -5,26 +5,19 @@ $(document).ready(function () {
     // *********************
 
     var game = {
-        status: "select player character", // character selection: [ select player character, select opponent ]
-        mode: "easy",
+        status: "select player character", // possible states: select player character, play match, game over
         round: 1,
-        defeated: [],
-        determineWin: function (id, health, numberOfCharacters) { // Method for determining a player win
+        determineWin: function (health, numberOfCharacters) {
             if (health <= 0) {
-                this.defeated[this.round - 1] = id;
 
-                if (this.defeated.length === (numberOfCharacters - 1)) {
+                if (this.round === (numberOfCharacters - 1)) {
                     this.status = "game over";
-                    console.log("You have won the Infinity Gauntlet")
                 }
                 else {
                     this.status = "select opponent";
                 }
 
                 this.round++;
-
-                console.log("Won");
-                console.log(this.status);
 
                 return true;
             }
@@ -35,96 +28,109 @@ $(document).ready(function () {
     };
 
     var display = {
-        status: "character selection", // [ character selection, arena, credits ]
         initialize: function () {
             $("#character-select").addClass("hide");
             $("#arena").addClass("hide");
+            $("#game-over").addClass("hide");
             $("#credits").addClass("hide");
         },
-        selectionScreen: function (characterAvatar, instance) { // Method for displaying the character selection screen
-            var i;
+        selectionScreen: {
+            fill: function (obj, characterAvatar, instance) { // Method for displaying the character selection screen
+                var i;
 
-            // Initialize display
-            this.initialize();
+                // Initialize display
+                obj.initialize(); // scope changed when function is embedded in the selectionScreen property of display
 
-            $("#character-select").removeClass("hide");
+                $("#character-select").removeClass("hide");
 
-            // Fill the character menu
-            if (instance === 1) {
-                for (i = 1; i <= characterAvatar.length; i++) {
-                    var startString = "pos-";
-                    var endString = "#" + startString + i;
-    
-                    $(endString).html(characterAvatar[i - 1]);
+                // Fill the character menu
+                if (instance === 1) {
+                    for (i = 1; i <= characterAvatar.length; i++) {
+                        var startString = "pos-";
+                        var endString = "#" + startString + i;
+
+                        $("#" + startString + i).html(characterAvatar[i - 1]);
+                        $("#" + startString + i + " .hero").addClass("select");
+                    }
                 }
+            },
+            grayOut: function (id) {
+                $("#" + id).removeClass("select");
+                $("#" + id).addClass("remove");
+    
+                // add border to enemies
             }
         },
-        arena: function (playerAvatar, opponentAvatar) { // Method for displaying the arena screen
-            var i;
-            
+        arena: {
+            fill: function(obj, playerAvatar, opponentAvatar) {
+                obj.initialize();
+
+                $("#arena").removeClass("hide");
+                $("#player").html(playerAvatar);
+                $("#opponent").html(opponentAvatar);
+            },
+            update: function(who, hp) {
+                $("#" + who + "-hp").remove();
+                $("#" + who + " .hero").append("<div id='" + who + "-hp'>" + hp + "</div>");
+            }
+        },
+        gameOver: function() {
             this.initialize();
 
-            $("#arena").removeClass("hide");
-            $("#player").html(playerAvatar);
-            $("#opponent").html(opponentAvatar);
+            $("#game-over").removeClass("hide");
         },
         credits: function () { // Method for displaying the credits screen
             this.initialize();
 
             $("#credits").removeClass("hide");
-            $("#player").html("<div>Congrats, you have won the Infinity Gauntlet</div>");
         }
     };
 
-    var characters = { // Deprecate role and active
+    var characters = {
         list: { // List of playable characters
             ironman: {
                 name: "Iron Man",
+                id: "ironman",
                 stats: {
                     health: 100,
                     attackPower: 10,
                     counterAttackPower: 15,
                     experience: 2
                 },
-                role: "none", // { none, avenger, villain }
-                active: false,
-                avatar: "<div id='ironman' class='hero' data-value='ironman'><span>Iron Man</span></div>"
+                avatar: "<div id='ironman' class='hero' data-value='ironman'><img src='assets/images/ironman.jpg' alt='Iron Man' /></div>"
             },
             captainAmerica: {
                 name: "Captain America",
+                id: "captain-america",
                 stats: {
                     health: 75,
                     attackPower: 15,
                     counterAttackPower: 5,
                     experience: 1,
                 },
-                role: "none",
-                active: false,
-                avatar: "<div id='captain-america' class='hero' data-value='captainAmerica'><span>Captain America</span></div>"
+                avatar: "<div id='captain-america' class='hero' data-value='captainAmerica'><img src='assets/images/captain_america.jpg' alt='Captain America' /></div>"
             },
             spiderman: {
                 name: "Spider Man",
+                id: "spiderman",
                 stats: {
                     health: 50,
                     attackPower: 5,
                     counterAttackPower: 15,
                     experience: 5,
                 },
-                role: "none",
-                active: false,
-                avatar: "<div id='spiderman' class='hero' data-value='spiderman'><span>Spider Man</span></div>"
+                avatar: "<div id='spiderman' class='hero' data-value='spiderman'><img src='assets/images/spiderman.jpg' alt='Spider Man' /></div>"
             },
             hulk: {
                 name: "Hulk",
+                id: "hulk",
                 stats: {
                     health: 200,
                     attackPower: 20,
                     counterAttackPower: 10,
                     experience: 1,
                 },
-                role: "none",
-                active: false,
-                avatar: "<div id='hulk' class='hero' data-value='hulk'><span>Hulk</span></div>"
+                avatar: "<div id='hulk' class='hero' data-value='hulk'><img src='assets/images/hulk.jpg' alt='Hulk' /></div>"
             }
         },
         total: function () {
@@ -142,31 +148,29 @@ $(document).ready(function () {
             }
 
             return characterAvatar;
-        },
-        activate: function (input) { // Method for activating a character, activated characters appear in the arena
-            this.list[input].active = true;
-        },
-        assignRoles: function (input) { // Method for assigning roles to all characters
-            var keys = Object.keys(this.list);
-            var i;
+        }//,
+        // assignRoles: function (input) { // Method for assigning roles to all characters
+        //     var keys = Object.keys(this.list);
+        //     var i;
 
-            for (i = 0; i < keys.length; i++) {
-                if (keys[i] === input) {
+        //     for (i = 0; i < keys.length; i++) {
+        //         if (keys[i] === input) {
 
-                    // Assign your role as Avenger
-                    this.list[keys[i]].role = "avenger";
-                }
-                else {
+        //             // Assign your role as Avenger
+        //             this.list[keys[i]].role = "avenger";
+        //         }
+        //         else {
 
-                    // Assign all other characters as villains
-                    this.list[keys[i]].role = "villain";
-                }
-            }
-        }
+        //             // Assign all other characters as villains
+        //             this.list[keys[i]].role = "villain";
+        //         }
+        //     }
+        // }
     };
 
     var player = {
         id: "",
+        key: "",
         name: "",
         stats: {
             health: 0,
@@ -195,7 +199,6 @@ $(document).ready(function () {
     };
 
     var opponent = {
-        id: "",
         name: "",
         stats: {
             health: 0,
@@ -204,8 +207,7 @@ $(document).ready(function () {
             experience: 0
         },
         avatar: "",
-        select: function (input, profile) { // Method to assign a character to opponent
-            this.id = input;
+        select: function (profile) { // Method to assign a character to opponent
             this.name = profile.name;
             this.stats.health = profile.stats.health;
             this.stats.counterAttackPower = profile.stats.counterAttackPower;
@@ -218,16 +220,16 @@ $(document).ready(function () {
     // *********************
 
     // When the page loads, display the selection screen
-    display.selectionScreen(characters.getAvatar(), 1);
+    display.selectionScreen.fill(display, characters.getAvatar(), 1);
 
     // *****************
     // * Define events *
     // *****************
 
     // This function is run whenever player clicks a hero
-    $(".hero").on("click", function () {
-
-        console.log("clicked");
+    // Used event delegation to removeClass select
+    // Resources:  https://stackoverflow.com/questions/28108736/jquery-click-function-still-works-after-removeclass
+    $(document).on("click", ".select", function () {
 
         var input = $(this).attr("data-value");
 
@@ -235,18 +237,19 @@ $(document).ready(function () {
         if (game.status === "select player character") {
 
             player.select(input, characters.list[input]);
-            characters.activate(input);
-            characters.assignRoles(input);
+            display.selectionScreen.grayOut(characters.list[input].id);
             game.status = "select opponent";
 
             // console.log(player);
         }
         else if (game.status === "select opponent") {
-            opponent.select(input, characters.list[input]);
-            characters.activate(input);
+            opponent.select(characters.list[input]);
+            display.selectionScreen.grayOut(characters.list[input].id);
             game.status = "play match";
+            display.arena.fill(display, player.avatar, opponent.avatar);
 
-            display.arena(player.avatar, opponent.avatar);
+            display.arena.update("player", player.stats.health);
+            display.arena.update("opponent", opponent.stats.health);
 
             // console.log(opponent);
             console.log(player);
@@ -260,12 +263,13 @@ $(document).ready(function () {
     });
 
     // This function is run whenever player clicks attack
-    $(".action").on("click", function () {
+    $("#action").on("click", function () {
 
         // Only execute contents during a match
         if (game.status === "play match") {
             opponent.stats.health -= player.attack(); // Add limit so health cannot be < 0
-            winConditions = game.determineWin(opponent.id, opponent.stats.health, characters.total());
+            display.arena.update("opponent", opponent.stats.health);
+            winConditions = game.determineWin(opponent.stats.health, characters.total());
 
             if (winConditions === true) {
                 player.reset(characters.list[player.id]);
@@ -275,16 +279,16 @@ $(document).ready(function () {
                 }
                 else {
                     game.status = "select opponent";
-                    display.selectionScreen(characters.getAvatar(), 2);   
+                    display.selectionScreen.fill(display, characters.getAvatar(), 2);
                 }
             }
             else {
                 player.stats.health -= opponent.stats.counterAttackPower; // Add limit so health cannot be < 0
+                display.arena.update("player", player.stats.health);
 
                 if (player.stats.health <= 0) {
                     game.status = "game over";
-
-                    console.log("Defeated");
+                    display.gameOver();
                 }
             }
 
@@ -296,4 +300,14 @@ $(document).ready(function () {
             // console.log(game);
         }
     });
+
+    $("#reset").on("click", function () {
+        initialize();
+        display.selectionScreen.fill(display, characters.getAvatar(), 1);
+    });
+
+    function initialize() {
+        game.status = "select player character";
+        game.round = 1;
+    };
 });

@@ -49,16 +49,30 @@
     </div>
     <div class="row">
       <div id="player" class="col-6">
+        <div id="player-hp"></div>
       </div>
       <div id="opponent" class="col-6">
+        <div id="opponent-hp"></div>
       </div>
     </div>
     <div class="row">
         <div class="col-6">
-            <button class="action" data-value="attack">Attack</button>
+            <button id="action" data-value="attack">Attack</button>
         </div>
     </div>
   </div>
+  <div id="game-over" class="container hide">
+      <div class="row">
+        <div class="col-12">
+          <span class="label">Game Over</span>
+        </div>
+      </div>
+      <div class="row">
+          <div class="col-6">
+              <button id="reset" data-value="reset">Reset</button>
+          </div>
+      </div>
+    </div>
   <div id="credits" class="container hide">
     <div class="row">
       <div class="col-12">
