@@ -21,9 +21,9 @@ This game is abstracted into a state machine of 3 states (character selection, p
     * Players will access the credits if they defeat all other characters
     * Players will access the game over screen if they are defeated
 
-Separate screen for each stage of the game:
-* Character Select
-* Arena
+Other features
+* Screen is cleared at each stage of the game
+* Damage dealt and taken will appear in the character model instead of a message
 
 # Screenshots
 
@@ -40,12 +40,16 @@ All experience gains carry over to the next match.
 ## Issues ([Feature], [Bug])
 
 * [Bug] When character model is loaded in Arena, hp section is removed (Fixed by re-adding on load)
+* [Feature] Refactor character stats
 * [Feature] Add border when selecting a hero or villain on the Character Select Screen
 * [Feature] Add character model when hovered or selected on Character Select Screen
 * [Feature] Prevent health from reducing less than 0
 * [Feature] Add special abilities (Iron Man - fire cannon, Captain America - shield bash, Black Widow - increase speed, Hulk - go berserk)
+* [Feature] Add resource bar for special abilities
+* [Feature] Make attack and counter attack calculated (i.e. attack and counter attack are ranges, attack is multiplied times a modifier for Black Widow, experience impacts characters differently)
 * [Feature] Extend to more Marvel characters with cool abilities (Spider Man - shoot web, Black Panther - absorb damage & counter attack, Ant Man - shrink/grow, Dr. Strange - go back in time and heal)
 * [Feature] Make mobile responsive for phones
+* [Feature] Refactor game and character objects to efficiently handle player and opponent objects 
 
 
 # References

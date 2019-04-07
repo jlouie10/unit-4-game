@@ -35,7 +35,7 @@ $(document).ready(function () {
             $("#credits").addClass("hide");
         },
         selectionScreen: {
-            fill: function (obj, characterAvatar, state) { // Fills the character menu, used to dynamically add characters to each screen
+            fill: function (obj, characterAvatar, state) { // Fills the character menu, used to dynamically add characters from the character object
                 var i;
 
                 obj.initialize(); // Scope changed, so the display object needs to be passed to this function
@@ -45,13 +45,13 @@ $(document).ready(function () {
                 if (state === "select player character") { // Do once to retain properties
                     for (i = 1; i <= characterAvatar.length; i++) {
                         
-                        // pos describes the character menu position
+                        // Assigns characters a position in the menu
                         $("#pos-" + i).html(characterAvatar[i - 1]);
                         $("#pos-" + i + " .hero").addClass("select");
                     }
                 }
             },
-            selected: function (id) {
+            selected: function (id) { // Removes selected characters as options
                 $("#" + id).removeClass("select");
                 $("#" + id).addClass("remove");
             }
@@ -61,9 +61,11 @@ $(document).ready(function () {
                 obj.initialize();
 
                 $("#arena").removeClass("hide");
+                
                 $("#player").html(playerModel);
                 $("#player").prepend("<div id='player-combat-text'><span></span></div>");
                 $("#player").append("<div id='player-hp'><span>HP: " + playerHealth + "</span></div>"); // Fix for deleting #player-hp
+
                 $("#opponent").html(opponentModel);
                 $("#opponent").prepend("<div id='opponent-combat-text'><span></span></div>");
                 $("#opponent").append("<div id='opponent-hp'><span>HP: " + opponentHealth + "</span></div>"); // Fix for deleting #opponent-hp
@@ -78,7 +80,7 @@ $(document).ready(function () {
 
             $("#game-over").removeClass("hide");
         },
-        credits: function () { // Method for displaying the credits screen
+        credits: function () {
             this.initialize();
 
             $("#credits").removeClass("hide");
@@ -151,24 +153,7 @@ $(document).ready(function () {
             }
 
             return characterAvatar;
-        }//,
-        // assignRoles: function (input) { // Method for assigning roles to all characters
-        //     var keys = Object.keys(this.list);
-        //     var i;
-
-        //     for (i = 0; i < keys.length; i++) {
-        //         if (keys[i] === input) {
-
-        //             // Assign your role as Avenger
-        //             this.list[keys[i]].role = "avenger";
-        //         }
-        //         else {
-
-        //             // Assign all other characters as villains
-        //             this.list[keys[i]].role = "villain";
-        //         }
-        //     }
-        // }
+        }
     };
 
     var player = {
@@ -183,13 +168,13 @@ $(document).ready(function () {
         },
         avatar: "",
         model: "",
-        select: function (input, profile) {
+        select: function (input, name, health, attackPower, experience, model) {
             this.id = input;
-            this.name = profile.name;
-            this.stats.health = profile.stats.health;
-            this.stats.attackPower = profile.stats.attackPower;
-            this.stats.experience = profile.stats.experience;
-            this.model = profile.model;
+            this.name = name;
+            this.stats.health = health;
+            this.stats.attackPower = attackPower;
+            this.stats.experience = experience;
+            this.model = model;
         },
         attack: function () {
             var currentAttack = this.stats.attackPower;
@@ -197,8 +182,8 @@ $(document).ready(function () {
 
             return currentAttack;
         },
-        reset: function (profile) {
-            this.stats.health = profile.stats.health;
+        reset: function (health) {
+            this.stats.health = health;
         }
     };
 
@@ -212,11 +197,11 @@ $(document).ready(function () {
         },
         avatar: "",
         model: "",
-        select: function (profile) {
-            this.name = profile.name;
-            this.stats.health = profile.stats.health;
-            this.stats.counterAttackPower = profile.stats.counterAttackPower;
-            this.model = profile.model;
+        select: function (name, health, counterAttackPower, model) {
+            this.name = name;
+            this.stats.health = health;
+            this.stats.counterAttackPower = counterAttackPower;
+            this.model = model;
         },
     };
 
@@ -239,14 +224,14 @@ $(document).ready(function () {
         var input = $(this).attr("data-value");
 
         if (game.status === "select player character") {
-            player.select(input, characters.list[input]);
+            player.select(input, characters.list[input].name, characters.list[input].stats.health, characters.list[input].stats.attackPower, characters.list[input].stats.experience, characters.list[input].model);
 
             display.selectionScreen.selected(characters.list[input].id);
 
             game.status = "select opponent";
         }
         else if (game.status === "select opponent") {
-            opponent.select(characters.list[input]);
+            opponent.select(characters.list[input].name, characters.list[input].stats.health, characters.list[input].stats.counterAttackPower, characters.list[input].model);
 
             display.selectionScreen.selected(characters.list[input].id);
 
@@ -270,7 +255,7 @@ $(document).ready(function () {
             winConditions = game.determineWin(opponent.stats.health, characters.total());
 
             if (winConditions === true) {
-                player.reset(characters.list[player.id]);
+                player.reset(characters.list[player.id].stats.health);
 
                 if (game.status === "game over") {
                     display.credits();
