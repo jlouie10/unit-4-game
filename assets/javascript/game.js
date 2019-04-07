@@ -57,22 +57,21 @@ $(document).ready(function () {
             }
         },
         arena: {
-            fill: function(obj, playerAvatar, opponentAvatar) {
+            fill: function(obj, playerModel, opponentModel, playerHealth, opponentHealth) {
                 obj.initialize();
 
                 $("#arena").removeClass("hide");
-                $("#player").html(playerAvatar);
-                $("#opponent").html(opponentAvatar);
+                $("#player").html(playerModel);
+                $("#player").prepend("<div id='player-combat-text'><span></span></div>");
+                $("#player").append("<div id='player-hp'><span>HP: " + playerHealth + "</span></div>"); // Fix for deleting #player-hp
+                $("#opponent").html(opponentModel);
+                $("#opponent").prepend("<div id='opponent-combat-text'><span></span></div>");
+                $("#opponent").append("<div id='opponent-hp'><span>HP: " + opponentHealth + "</span></div>"); // Fix for deleting #opponent-hp
             },
             update: function(who, hp, ap) {
-                $("#" + who + "-hp").remove();
-                $("#" + who + " .hero").append("<div id='" + who + "-hp'>" + hp + "</div>");
-            },
-            message: function(str1, str2) {
-                
-                $("#message").html(str1);
-                $("#message").append(str2);
-            },
+                $("#" + who + "-combat-text").html("<span>" + ap + "</span>");
+                $("#" + who + "-hp").html("<span>HP: " + hp + "</span>");
+            }
         },
         gameOver: function() {
             this.initialize();
@@ -97,7 +96,8 @@ $(document).ready(function () {
                     counterAttackPower: 15,
                     experience: 2
                 },
-                avatar: "<div id='ironman' class='hero' data-value='ironman'><img src='assets/images/ironman.jpg' alt='Iron Man' /></div>"
+                avatar: "<div id='ironman' class='hero' data-value='ironman'><img src='assets/images/ironman_avatar.jpg' alt='Iron Man' /></div>",
+                model: "<img src='assets/images/ironman_model.jpg' alt='Iron Man' /><div class='font-avengers'><span>Iron Man</span></div>"
             },
             captainAmerica: {
                 name: "Captain America",
@@ -108,18 +108,20 @@ $(document).ready(function () {
                     counterAttackPower: 5,
                     experience: 1,
                 },
-                avatar: "<div id='captain-america' class='hero' data-value='captainAmerica'><img src='assets/images/captain_america.jpg' alt='Captain America' /></div>"
+                avatar: "<div id='captain-america' class='hero' data-value='captainAmerica'><img src='assets/images/captain_america_avatar.jpg' alt='Captain America' /></div>",
+                model: "<img src='assets/images/captain_america_model.jpg' alt='Captain America' /><div class='font-avengers'><span>Captain America</span></div>"
             },
-            spiderman: {
-                name: "Spider Man",
-                id: "spiderman",
+            blackWidow: {
+                name: "Black Widow",
+                id: "black-widow",
                 stats: {
                     health: 50,
                     attackPower: 5,
                     counterAttackPower: 15,
                     experience: 5,
                 },
-                avatar: "<div id='spiderman' class='hero' data-value='spiderman'><img src='assets/images/spiderman.jpg' alt='Spider Man' /></div>"
+                avatar: "<div id='black-widow' class='hero' data-value='blackWidow'><img src='assets/images/black_widow_avatar.jpg' alt='Black Widow' /></div>",
+                model: "<img src='assets/images/black_widow_model.jpg' alt='Black Widow' /><div class='font-avengers'><span>Black Widow</span></div>"
             },
             hulk: {
                 name: "Hulk",
@@ -130,7 +132,8 @@ $(document).ready(function () {
                     counterAttackPower: 10,
                     experience: 1,
                 },
-                avatar: "<div id='hulk' class='hero' data-value='hulk'><img src='assets/images/hulk.jpg' alt='Hulk' /></div>"
+                avatar: "<div id='hulk' class='hero' data-value='hulk'><img src='assets/images/hulk_avatar.jpg' alt='Hulk' /></div>",
+                model: "<img src='assets/images/hulk_model.jpg' alt='Hulk' /><div class='font-avengers'><span>Hulk</span></div>"
             }
         },
         total: function () {
@@ -179,13 +182,14 @@ $(document).ready(function () {
             experience: 0
         },
         avatar: "",
+        model: "",
         select: function (input, profile) {
             this.id = input;
             this.name = profile.name;
             this.stats.health = profile.stats.health;
             this.stats.attackPower = profile.stats.attackPower;
             this.stats.experience = profile.stats.experience;
-            this.avatar = profile.avatar;
+            this.model = profile.model;
         },
         attack: function () {
             var currentAttack = this.stats.attackPower;
@@ -207,11 +211,12 @@ $(document).ready(function () {
             experience: 0
         },
         avatar: "",
+        model: "",
         select: function (profile) {
             this.name = profile.name;
             this.stats.health = profile.stats.health;
             this.stats.counterAttackPower = profile.stats.counterAttackPower;
-            this.avatar = profile.avatar;
+            this.model = profile.model;
         },
     };
 
@@ -247,10 +252,7 @@ $(document).ready(function () {
 
             game.status = "play match";
 
-            display.arena.fill(display, player.avatar, opponent.avatar);
-
-            display.arena.update("player", player.stats.health);
-            display.arena.update("opponent", opponent.stats.health);
+            display.arena.fill(display, player.model, opponent.model, player.stats.health, opponent.stats.health);
         }
     });
 
@@ -263,7 +265,7 @@ $(document).ready(function () {
 
             opponent.stats.health -= attack; // Add limit so health cannot be < 0
             
-            display.arena.update("opponent", opponent.stats.health);
+            display.arena.update("opponent", opponent.stats.health, attack);
 
             winConditions = game.determineWin(opponent.stats.health, characters.total());
 
@@ -281,8 +283,7 @@ $(document).ready(function () {
             else {
                 player.stats.health -= opponent.stats.counterAttackPower; // Add limit so health cannot be < 0
                 
-                display.arena.update("player", player.stats.health);
-                display.arena.message("You attacked for " + attack, "Your opponent countered for " + opponent.stats.counterAttackPower);
+                display.arena.update("player", player.stats.health, -opponent.stats.counterAttackPower);
 
                 if (player.stats.health <= 0) {
                     game.status = "game over";

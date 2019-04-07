@@ -16,6 +16,7 @@
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css?family=Playfair+Display:400,400i,700,900" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Anton" rel="stylesheet">
 
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
@@ -31,10 +32,12 @@
   <div id="character-select" class="container">
     <div class="row">
       <div class="col-12">
-        <span class="label">Character Select Area</span>
+        <h1>
+          <span class="label">Character Select</span>
+        </h1>
       </div>
     </div>
-    <div class='row'>
+    <div id="character-menu" class='row'>
       <div id='pos-1' class='col-3'></div>
       <div id='pos-2' class='col-3'></div>
       <div id='pos-3' class='col-3'></div>
@@ -44,20 +47,25 @@
   <div id="arena" class="container hide">
     <div class="row">
       <div class="col-12">
-        <span class="label">Arena</span>
+        <h1>
+          <span id="arena-label" class="label">Arena</span>
+        </h1>
       </div>
     </div>
     <div class="row">
-      <div id="player" class="col-6">
+      <div id="player" class="col-5">
         <div id="player-hp"></div>
       </div>
-      <div id="opponent" class="col-6">
+      <div class="col-2">
+        <span id="vs-label">VS</span>
+      </div>
+      <div id="opponent" class="col-5">
         <div id="opponent-hp"></div>
       </div>
     </div>
     <div class="row">
-      <div id="button-container" class="col-6">
-        <button id="action" data-value="attack">Attack</button>
+      <div id="action-container" class="col-2">
+        <button id="action" data-value="attack"><i class="fas fa-hand-rock"></i></button>
         <span id="message"></span>
       </div>
     </div>

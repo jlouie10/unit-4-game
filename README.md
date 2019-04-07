@@ -38,4 +38,6 @@ All experience gains carry over to the next match.
 
 # Issues
 
+- Add border when selecting a hero or villain on the Character Select Screen
+
 # References

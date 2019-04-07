@@ -1,3 +1,60 @@
+body {
+    background-color: #000;
+    background-image: url("../images/avengers_bg.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    height: 100%;
+    width: 100%;
+    font-family: 'Playfair Display', serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Open Sans', sans-serif;
+    color: #333;
+}
+
+.font-avengers {
+    font-family: 'Anton', sans-serif;
+    font-size: 24px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+#character-select, #arena, #game-over, #credits {
+    text-align: center;
+}
+
+#character-select, #arena {
+    margin: 100px auto;
+    padding: 40px;
+    max-width: 960px;
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.85);
+    border-radius: 12px;
+    box-shadow: 0 13px 27px -5px rgba(50,50,93,.25), 0 8px 16px -8px rgba(0,0,0,.3), 0 -6px 16px -6px rgba(0,0,0,.025);
+    height: 480px;
+    position: relative;
+}
+
+#character-menu {
+    max-width: 310px;
+    margin: 0 auto;
+    position: absolute;
+    left: 50%;
+    margin-left: -155px;
+    bottom: 20px;
+    width: 100%;
+}
+
+#character-menu div {
+    padding: 0;
+}
+
+.hero img {
+    max-width: 75px;
+    max-height: 75px;
+}
+
 .show {
     display: block;
 }
@@ -7,13 +64,12 @@
 }
 
 .hero {
-    height: 200px;
-    width: 200px;
     text-align: center;
-    margin: 0 auto;
+    margin: 4px;
+
 }
 
-.remove {
+.remove img {
     opacity: 0.4;
 }
 
@@ -21,32 +77,67 @@
     line-height: 200px;
 }
 
-.hero img {
-    box-shadow: 0 13px 27px -5px rgba(50,50,93,.25), 0 8px 16px -8px rgba(0,0,0,.3), 0 -6px 16px -6px rgba(0,0,0,.025);
-    border-radius: 12px;
+.remove img {
+    box-shadow: none;
 }
 
 #ironman {
-    /* background-color: red; */
     color: #fff;
 }
 
 #captain-america {
-    /* background-color: blue; */
     color: #fff;
 }
 
-#spiderman {
-    /* background-color: black; */
+#black-widow {
     color: #fff;
 }
 
 #hulk {
-    /* background-color: green; */
     color: #fff;
 }
 
-#player-hp, #opponent-hp {
+#arena-label {
+    display: none;
+}
+
+#vs-label {
+    font-size: 24px;
     position: absolute;
-    bottom: 0;
+    bottom: 50%;
+    left: 50%;
+    margin-bottom: -18px;
+    margin-left: -14px;
+}
+
+#player img, #opponent img {
+    max-width: 300px;
+    width: 100%;
+    border-radius: 12px;
+    box-shadow: 0 13px 27px -5px rgba(50,50,93,.25), 0 8px 16px -8px rgba(0,0,0,.3), 0 -6px 16px -6px rgba(0,0,0,.025);
+}
+
+#player-hp, #opponent-hp {
+    margin-top: -10px;
+}
+
+#action-container {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    margin-left: -80px;
+}
+#action {
+    padding: 0;
+    height: 50px;
+    width: 50px;
+    border-radius: 8px;
+    border: none;
+    background-color: #333;
+    box-shadow: 0 13px 27px -5px rgba(50,50,93,.25), 0 8px 16px -8px rgba(0,0,0,.3), 0 -6px 16px -6px rgba(0,0,0,.025);
+}
+
+#action i {
+    font-size: 32px;
+    color: #fff;
 }
