@@ -56,27 +56,33 @@
       </div>
     </div>
     <div class="row">
-        <div class="col-6">
-            <button id="action" data-value="attack">Attack</button>
-        </div>
+      <div id="button-container" class="col-6">
+        <button id="action" data-value="attack">Attack</button>
+        <span id="message"></span>
+      </div>
     </div>
   </div>
   <div id="game-over" class="container hide">
-      <div class="row">
-        <div class="col-12">
-          <span class="label">Game Over</span>
-        </div>
-      </div>
-      <div class="row">
-          <div class="col-6">
-              <button id="reset" data-value="reset">Reset</button>
-          </div>
+    <div class="row">
+      <div class="col-12">
+        <span class="label">Game Over</span>
       </div>
     </div>
+    <div class="row">
+      <div class="col-6">
+        <button class="reset" data-value="reset">Reset</button>
+      </div>
+    </div>
+  </div>
   <div id="credits" class="container hide">
     <div class="row">
       <div class="col-12">
         <span class="label">Credits</span>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-6">
+        <button class="reset" data-value="reset">Reset</button>
       </div>
     </div>
   </div>
