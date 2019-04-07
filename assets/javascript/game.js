@@ -1,276 +1,268 @@
 $(document).ready(function () {
-
-    // *********************
-    // * Declare variables *
-    // *********************
-
+    
     var game = {
-        status: "select player character", // present state of the game { select character (player, opponent), play match, game over }
-        round: 1,
-        determineWin: function (health, charactersTotal) {
+        status: "select character",
+        player: {
+            id: "",
+            name: "",
+            stats: {
+                health: 0,
+                healthTotal: 0,
+                attackPower: 0,
+                counterAttackPower: 0,
+                experience: 0
+            },
+            selected: false,
+        },
+        opponent: {
+            id: "",
+            name: "",
+            stats: {
+                health: 0,
+                healthTotal: 0,
+                attackPower: 0,
+                counterAttackPower: 0,
+                experience: 0
+            },
+            selected: false
+        },
+        defeated: 0,
+        getCharacter: function (who, id, name, hp, ap, cap, xp) {
+            this[who].id = id;
+            this[who].name = name;
+            this[who].stats.health = hp;
+            this[who].stats.healthTotal = hp;
+            this[who].stats.attackPower = ap;
+            this[who].stats.counterAttackPower = cap;
+            this[who].stats.experience = xp;
+            this[who].selected = true;
+        },
+        determineWin: function (health, total, defeated) {
             if (health <= 0) {
 
-                if (this.round === (charactersTotal - 1)) {
+                this.defeated++;
+
+                if (this.defeated === (total - 1)) {
                     this.status = "game over";
                 }
                 else {
-                    this.status = "select opponent";
+                    this.status = "select character";
                 }
-
-                this.round++;
 
                 return true;
             }
             else {
                 return false;
             }
+        },
+        performAction: function (action) {
+
+            if (action === "attack") {
+                var currentAttack = this.player.stats.attackPower;
+                this.player.stats.attackPower += this.player.stats.experience;
+
+                return currentAttack;
+            }
+        },
+        reset: function (what, health) {
+            if (what === "player") {
+                this.player.stats.health = health;
+                this.opponent.selected = false;
+            }
+            else if (what === "game") {
+                this.status = "select character";
+                this.player.selected = false;
+                this.opponent.selected = false;
+                this.defeated = 0;
+            }
         }
     };
 
     var display = {
-        initialize: function () {
-            $("#character-select").addClass("hide");
+        characterSelection: function () {
             $("#arena").addClass("hide");
-            $("#game-over").addClass("hide");
-            $("#credits").addClass("hide");
+            $("#character-select").removeClass("hide");
         },
-        selectionScreen: {
-            fill: function (obj, characterAvatar, state) { // Fills the character menu, used to dynamically add characters from the character object
-                var i;
-
-                obj.initialize(); // Scope changed, so the display object needs to be passed to this function
-
-                $("#character-select").removeClass("hide");
-
-                if (state === "select player character") { // Do once to retain properties
-                    for (i = 1; i <= characterAvatar.length; i++) {
-                        
-                        // Assigns characters a position in the menu
-                        $("#pos-" + i).html(characterAvatar[i - 1]);
-                        $("#pos-" + i + " .hero").addClass("select");
-                    }
-                }
-            },
-            selected: function (id) { // Removes selected characters as options
-                $("#" + id).removeClass("select");
-                $("#" + id).addClass("remove");
-            }
+        updateSelectedCharacter: function (id) { // Removes selected characters as options from the character menu
+            $("#" + id).removeClass("select");
+            $("#" + id).addClass("remove");
         },
-        arena: {
-            fill: function(obj, playerModel, opponentModel, playerHealth, opponentHealth) {
-                obj.initialize();
-
-                $("#arena").removeClass("hide");
-                
-                $("#player").html(playerModel);
-                $("#player").prepend("<div id='player-combat-text'><span></span></div>");
-                $("#player").append("<div id='player-hp'><span>HP: " + playerHealth + "</span></div>"); // Fix for deleting #player-hp
-
-                $("#opponent").html(opponentModel);
-                $("#opponent").prepend("<div id='opponent-combat-text'><span></span></div>");
-                $("#opponent").append("<div id='opponent-hp'><span>HP: " + opponentHealth + "</span></div>"); // Fix for deleting #opponent-hp
-            },
-            update: function(who, hp, ap) {
-                $("#" + who + "-combat-text").html("<span>" + ap + "</span>");
-                $("#" + who + "-hp").html("<span>HP: " + hp + "</span>");
-            }
+        arena: function () {
+            $("#character-select").addClass("hide");
+            $("#arena").removeClass("hide");
         },
-        gameOver: function() {
-            this.initialize();
-
+        updateModel: function (who, name, hp, hpt, model) { // Model is initialized once per round
+            $("#" + who + "-name").html(name);
+            $("#" + who + "-hp").html("HP: " + hp + " / " + hpt);
+            $("#" + who + "-model").html(model);
+            $("#" + who + "-combat-text").html("");
+        },
+        updateFrame: function (who, hp, hpt, damage) { // Health and combat text are updated
+            $("#" + who + "-hp").html("HP: " + hp + " / " + hpt);
+            $("#" + who + "-combat-text").html(damage);
+        },
+        gameOver: function () {
+            $("#arena").addClass("hide");
             $("#game-over").removeClass("hide");
         },
         credits: function () {
-            this.initialize();
-
+            $("#arena").addClass("hide");
             $("#credits").removeClass("hide");
+        },
+        reset: function() {
+            $("#game-over").addClass("hide");
+            $("#credits").addClass("hide");
+
+            $("#character-menu .col-3 div").addClass("select");
+            $("#character-menu .col-3 div").removeClass("remove");
+
+            this.characterSelection();
         }
     };
 
-    var characters = {
-        list: {
-            ironman: {
-                name: "Iron Man",
-                id: "ironman",
-                stats: {
-                    health: 100,
-                    attackPower: 10,
-                    counterAttackPower: 15,
-                    experience: 2
-                },
-                avatar: "<div id='ironman' class='hero' data-value='ironman'><img src='assets/images/ironman_avatar.jpg' alt='Iron Man' /></div>",
-                model: "<img src='assets/images/ironman_model.jpg' alt='Iron Man' /><div class='font-avengers'><span>Iron Man</span></div>"
+    var character = {
+        ironman: {
+            id: "ironman",
+            name: "Iron Man",
+            stats: {
+                health: 50,
+                attackPower: 4,
+                counterAttackPower: 5,
+                experience: 2
             },
-            captainAmerica: {
-                name: "Captain America",
-                id: "captain-america",
-                stats: {
-                    health: 75,
-                    attackPower: 15,
-                    counterAttackPower: 5,
-                    experience: 1,
-                },
-                avatar: "<div id='captain-america' class='hero' data-value='captainAmerica'><img src='assets/images/captain_america_avatar.jpg' alt='Captain America' /></div>",
-                model: "<img src='assets/images/captain_america_model.jpg' alt='Captain America' /><div class='font-avengers'><span>Captain America</span></div>"
-            },
-            blackWidow: {
-                name: "Black Widow",
-                id: "black-widow",
-                stats: {
-                    health: 50,
-                    attackPower: 5,
-                    counterAttackPower: 15,
-                    experience: 5,
-                },
-                avatar: "<div id='black-widow' class='hero' data-value='blackWidow'><img src='assets/images/black_widow_avatar.jpg' alt='Black Widow' /></div>",
-                model: "<img src='assets/images/black_widow_model.jpg' alt='Black Widow' /><div class='font-avengers'><span>Black Widow</span></div>"
-            },
-            hulk: {
-                name: "Hulk",
-                id: "hulk",
-                stats: {
-                    health: 200,
-                    attackPower: 20,
-                    counterAttackPower: 10,
-                    experience: 1,
-                },
-                avatar: "<div id='hulk' class='hero' data-value='hulk'><img src='assets/images/hulk_avatar.jpg' alt='Hulk' /></div>",
-                model: "<img src='assets/images/hulk_model.jpg' alt='Hulk' /><div class='font-avengers'><span>Hulk</span></div>"
-            }
+            role: "",
+            model: "<img src='assets/images/ironman_model.png' alt='Iron Man' />"
         },
-        total: function () {
-            var keys = Object.keys(this.list);
-
-            return keys.length;
+        captainAmerica: {
+            id: "captain-america",
+            name: "Captain America",
+            stats: {
+                health: 125,
+                attackPower: 2,
+                counterAttackPower: 6,
+                experience: 1
+            },
+            role: "",
+            model: "<img src='assets/images/captain_america_model.png' alt='Captain America' />"
         },
-        getAvatar: function () {
-            var keys = Object.keys(this.list);
-            var i;
-            var characterAvatar = [];
-
-            for (i = 0; i < keys.length; i++) {
-                characterAvatar[i] = this.list[keys[i]].avatar;
-            }
-
-            return characterAvatar;
+        blackWidow: {
+            id: "black-widow",
+            name: "Black Widow",
+            stats: {
+                health: 50,
+                attackPower: 5,
+                counterAttackPower: 8,
+                experience: 3
+            },
+            role: "",
+            model: "<img src='assets/images/black_widow_model.png' alt='Black Widow' />"
+        },
+        hulk: {
+            id: "hulk",
+            name: "Hulk",
+            stats: {
+                health: 100,
+                attackPower: 10,
+                counterAttackPower: 10,
+                experience: 0
+            },
+            role: "",
+            model: "<img src='assets/images/hulk_model.png' alt='Hulk' />"
         }
     };
 
-    var player = {
-        id: "",
-        key: "",
-        name: "",
-        stats: {
-            health: 0,
-            attackPower: 0,
-            counterAttackPower: 0,
-            experience: 0
-        },
-        avatar: "",
-        model: "",
-        select: function (input, name, health, attackPower, experience, model) {
-            this.id = input;
-            this.name = name;
-            this.stats.health = health;
-            this.stats.attackPower = attackPower;
-            this.stats.experience = experience;
-            this.model = model;
-        },
-        attack: function () {
-            var currentAttack = this.stats.attackPower;
-            this.stats.attackPower += this.stats.experience;
-
-            return currentAttack;
-        },
-        reset: function (health) {
-            this.stats.health = health;
-        }
-    };
-
-    var opponent = {
-        name: "",
-        stats: {
-            health: 0,
-            attackPower: 0,
-            counterAttackPower: 0,
-            experience: 0
-        },
-        avatar: "",
-        model: "",
-        select: function (name, health, counterAttackPower, model) {
-            this.name = name;
-            this.stats.health = health;
-            this.stats.counterAttackPower = counterAttackPower;
-            this.model = model;
-        },
-    };
-
-    // *********************
-    // * Execute Functions *
-    // *********************
-
-    // When the page loads, display and fill the selection screen
-    display.selectionScreen.fill(display, characters.getAvatar(), game.status);
-
-    // *****************
-    // * Define events *
-    // *****************
-
-    // This function is run whenever player clicks a hero
-    // Used event delegation to removeClass select
-    // Resources:  https://stackoverflow.com/questions/28108736/jquery-click-function-still-works-after-removeclass
     $(document).on("click", ".select", function () {
 
-        var input = $(this).attr("data-value");
+        if (game.status === "select character") {
 
-        if (game.status === "select player character") {
-            player.select(input, characters.list[input].name, characters.list[input].stats.health, characters.list[input].stats.attackPower, characters.list[input].stats.experience, characters.list[input].model);
+            var key = $(this).attr("data-value");
 
-            display.selectionScreen.selected(characters.list[input].id);
+            if (game.player.selected === false) {
+                game.getCharacter("player", key,
+                    character[key].name,
+                    character[key].stats.health,
+                    character[key].stats.attackPower,
+                    character[key].stats.counterAttackPower,
+                    character[key].stats.experience);
 
-            game.status = "select opponent";
-        }
-        else if (game.status === "select opponent") {
-            opponent.select(characters.list[input].name, characters.list[input].stats.health, characters.list[input].stats.counterAttackPower, characters.list[input].model);
+                display.updateModel("player",
+                    character[key].name,
+                    character[key].stats.health,
+                    character[key].stats.health,
+                    character[key].model);
+            }
+            else {
+                game.getCharacter("opponent", key,
+                    character[key].name,
+                    character[key].stats.health,
+                    character[key].stats.attackPower,
+                    character[key].stats.counterAttackPower,
+                    character[key].stats.experience);
 
-            display.selectionScreen.selected(characters.list[input].id);
+                display.updateModel("opponent",
+                    character[key].name,
+                    character[key].stats.health,
+                    character[key].stats.health,
+                    character[key].model);
 
-            game.status = "play match";
+                game.status = "play match";
+                display.arena();
+            }
 
-            display.arena.fill(display, player.model, opponent.model, player.stats.health, opponent.stats.health);
+            display.updateSelectedCharacter(character[key].id);
         }
     });
 
-    // This function is run whenever player clicks attack
-    $("#action").on("click", function () {
+    $("#attack").on("click", function () {
 
         // Only execute contents during a match
         if (game.status === "play match") {
-            var attack = player.attack()
 
-            opponent.stats.health -= attack; // Add limit so health cannot be < 0
-            
-            display.arena.update("opponent", opponent.stats.health, attack);
+            var attack = game.performAction("attack");
+            var keys = Object.keys(character);
 
-            winConditions = game.determineWin(opponent.stats.health, characters.total());
+            game.opponent.stats.health -= attack;
+
+            if (game.opponent.stats.health < 0) {
+                game.opponent.stats.health = 0;
+            }
+
+            winConditions = game.determineWin(game.opponent.stats.health, keys.length);
+
+            display.updateFrame("opponent",
+                game.opponent.stats.health,
+                game.opponent.stats.healthTotal,
+                attack);
 
             if (winConditions === true) {
-                player.reset(characters.list[player.id].stats.health);
 
                 if (game.status === "game over") {
                     display.credits();
                 }
                 else {
-                    game.status = "select opponent";
-                    display.selectionScreen.fill(display, characters.getAvatar(), 2);
+                    game.reset("player", character[game.player.id].stats.health);
+
+                    display.updateFrame("player",
+                        game.player.stats.health,
+                        game.player.stats.healthTotal,
+                        "");
+
+                    display.characterSelection();
                 }
             }
             else {
-                player.stats.health -= opponent.stats.counterAttackPower; // Add limit so health cannot be < 0
-                
-                display.arena.update("player", player.stats.health, -opponent.stats.counterAttackPower);
+                game.player.stats.health -= game.opponent.stats.counterAttackPower;
 
-                if (player.stats.health <= 0) {
+                if (game.player.stats.health < 0) {
+                    game.player.stats.health = 0;
+                }
+
+                display.updateFrame("player",
+                    game.player.stats.health,
+                    game.player.stats.healthTotal,
+                    -game.opponent.stats.counterAttackPower);
+
+                if (game.player.stats.health <= 0) {
                     game.status = "game over";
                     display.gameOver();
                 }
@@ -279,12 +271,7 @@ $(document).ready(function () {
     });
 
     $(".reset").on("click", function () {
-        initialize();
-        display.selectionScreen.fill(display, characters.getAvatar(), game.status);
+        game.reset("game");
+        display.reset();
     });
-
-    function initialize() {
-        game.status = "select player character";
-        game.round = 1;
-    };
 });

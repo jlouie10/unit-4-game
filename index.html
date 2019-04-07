@@ -29,51 +29,83 @@
 </head>
 
 <body>
+  <header></header>
   <div id="character-select" class="container">
-    <div class="row">
+    <div id="character-label" class="row label">
       <div class="col-12">
         <h1>
-          <span class="label">Character Select</span>
+          <span>Character Select</span>
         </h1>
       </div>
     </div>
-    <div id="character-menu" class='row'>
-      <div id='pos-1' class='col-3'></div>
-      <div id='pos-2' class='col-3'></div>
-      <div id='pos-3' class='col-3'></div>
-      <div id='pos-4' class='col-3'></div>
+    <div id="character-menu" class="row">
+      <div id="pos-1" class="col-3">
+        <div id="ironman" class="select" data-value="ironman">
+          <img src="assets/images/ironman_frame.jpg" alt="Iron Man" />
+        </div>
+      </div>
+      <div id="pos-2" class="col-3">
+        <div id="captain-america" class="select" data-value="captainAmerica">
+          <img src="assets/images/captain_america_frame.jpg" alt="Captain America" />
+        </div>
+      </div>
+      <div id="pos-3" class="col-3">
+        <div id="black-widow" class="select" data-value="blackWidow">
+          <img src="assets/images/black_widow_frame.jpg" alt="Black Widow" />
+        </div>
+      </div>
+      <div id="pos-4" class="col-3">
+        <div id="hulk" class="select" data-value="hulk">
+          <img src="assets/images/hulk_frame.jpg" alt="Hulk" />
+        </div>
+      </div>
+    </div>
+    <div id="versus" class="row">
+      <div class="col-6"></div>
+      <div class="col-6"></div>
     </div>
   </div>
+
   <div id="arena" class="container hide">
-    <div class="row">
+    <div id="arena-label" class="row label">
       <div class="col-12">
         <h1>
-          <span id="arena-label" class="label">Arena</span>
+          <span>Arena</span>
         </h1>
       </div>
     </div>
-    <div class="row">
+    <div id="ring" class="row">
       <div id="player" class="col-5">
+        <div id="player-model"></div>
+        <div id="player-name"></div>
         <div id="player-hp"></div>
+        <div id="player-combat-text"></div>
       </div>
-      <div class="col-2">
-        <span id="vs-label">VS</span>
+      <div id="vs-label" class="col-2">
+        <span>VS</span>
       </div>
       <div id="opponent" class="col-5">
+        <div id="opponent-model"></div>
+        <div id="opponent-name"></div>
         <div id="opponent-hp"></div>
+        <div id="opponent-combat-text"></div>
       </div>
     </div>
     <div class="row">
       <div id="action-container" class="col-2">
-        <button id="action" data-value="attack"><i class="fas fa-hand-rock"></i></button>
+        <button id="attack" data-value="attack"><i class="fas fa-hand-rock"></i></button>
         <span id="message"></span>
       </div>
     </div>
   </div>
+
   <div id="game-over" class="container hide">
     <div class="row">
       <div class="col-12">
         <span class="label">Game Over</span>
+        <div>
+            Try again
+          </div>
       </div>
     </div>
     <div class="row">
@@ -82,15 +114,27 @@
       </div>
     </div>
   </div>
+
   <div id="credits" class="container hide">
     <div class="row">
       <div class="col-12">
         <span class="label">Credits</span>
+        <div>
+          Congratulations on winning the Infinity Gauntlet!
+        </div>
       </div>
     </div>
     <div class="row">
       <div class="col-6">
         <button class="reset" data-value="reset">Reset</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="log" class="container">
+    <div class="row">
+      <div id="log-message" class="col-12">
+        <span></span>
       </div>
     </div>
   </div>
