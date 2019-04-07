@@ -6,23 +6,24 @@ Fun and interactive game for web browsers with dynamically updated HTML pages us
 The Avengers are on a mission to locate the Infinity Gauntler! Choose a hero and survive against other heroes and villains to be the one who ends up with it.
 
 This game is abstracted into a state machine of 3 states (character selection, play match, game over). 
-- The game starts in the character selection state
-    - Players choose their character and opponent
-    - After an opponent is selected, the game transitions to the play match state
-- Play match state
-    - Players attack their opponent
-    - Opponents counter attack the player
-    - Players gain experience, which contributes to their attack power
-    - If the player's health reaches 0, the game is over and the game transitions to the game over state
-    - If the opponent's health reaches 0, the game returns to the character selection state to choose a new opponent
-    - If the player defeats all other characters, the game transitions to the game over state
-- Game over state
-    - Players will access the credits if they defeat all other characters
-    - Players will access the game over screen if they are defeated
+* Character selection
+    * Initial state
+    * Players choose their character and opponent
+    * After an opponent is selected, the game transitions to the play match state
+* Play match
+    * Players attack their opponent
+    * Opponents counter attack the player
+    * Players gain experience, which contributes to their attack power
+    * If the player's health reaches 0, the game is over and the game transitions to the game over state
+    * If the opponent's health reaches 0, the game returns to the character selection state to choose a new opponent
+    * If the player defeats all other characters, the game transitions to the game over state
+* Game over
+    * Players will access the credits if they defeat all other characters
+    * Players will access the game over screen if they are defeated
 
 Separate screen for each stage of the game:
-- Character Select
-- Arena
+* Character Select
+* Arena
 
 # Screenshots
 
@@ -36,8 +37,18 @@ Once the match starts, you will be transported to the Arena, where you will be a
 
 All experience gains carry over to the next match.
 
-# Issues
+## Issues ([Feature], [Bug])
 
-- Add border when selecting a hero or villain on the Character Select Screen
+* [Bug] When character model is loaded in Arena, hp section is removed (Fixed by re-adding on load)
+* [Feature] Add border when selecting a hero or villain on the Character Select Screen
+* [Feature] Add character model when hovered or selected on Character Select Screen
+* [Feature] Prevent health from reducing less than 0
+* [Feature] Add special abilities (Iron Man - fire cannon, Captain America - shield bash, Black Widow - increase speed, Hulk - go berserk)
+* [Feature] Extend to more Marvel characters with cool abilities (Spider Man - shoot web, Black Panther - absorb damage & counter attack, Ant Man - shrink/grow, Dr. Strange - go back in time and heal)
+* [Feature] Make mobile responsive for phones
+
 
 # References
+
+* Used event delegation to remove character choices from the menu after selected
+    * https://stackoverflow.com/questions/28108736/jquery-click-function-still-works-after-removeclass
