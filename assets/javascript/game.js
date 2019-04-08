@@ -249,6 +249,8 @@ var abc = 1;
 
                 if (game.status === "game over") {
                     display.credits();
+
+                    message(game.player.name + " has defeated all opponents.")
                 }
                 else {
                     game.reset("player", character[game.player.id].stats.health);
@@ -259,6 +261,8 @@ var abc = 1;
                         "");
 
                     display.characterSelection();
+
+                    message(game.player.name + " has defeated " + game.opponent.name + ", select new opponent.");
                 }
             }
             else {
@@ -276,6 +280,8 @@ var abc = 1;
                 if (game.player.stats.health <= 0) {
                     game.status = "game over";
                     display.gameOver();
+
+                    message(game.player.name + " has lost, please try again.");
                 }
                 else {
                     message(game.player.name +
