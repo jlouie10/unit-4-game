@@ -96,8 +96,8 @@
     </div>
     <div class="row">
       <div id="action-container" class="col-2">
-        <button id="attack" data-value="attack" data-toggle="tooltip" data-placement="top"
-          title="Attack your opponent"><i class="fas fa-hand-rock"></i></button>
+        <button id="attack" class="animated infinite pulse delay-3s" data-value="attack" data-toggle="tooltip"
+          data-placement="top" title="Attack your opponent"><i class="fas fa-hand-rock"></i></button>
         <span id="message"></span>
       </div>
     </div>
@@ -106,14 +106,14 @@
   <div id="game-over" class="container hide">
     <div class="row">
       <div class="col-12">
-        <span class="font-white">Game Over</span>
-        <div>
+        <span class="font-avengers font-white label">Game Over</span>
+        <div class="font-white">
           Try again
         </div>
       </div>
     </div>
     <div class="row">
-      <div class="col-6">
+      <div class="col-6 reset-container">
         <button class="reset" data-value="reset">Reset</button>
       </div>
     </div>
@@ -122,25 +122,20 @@
   <div id="credits" class="container hide">
     <div class="row">
       <div class="col-12">
-        <span class="font-white">Credits</span>
-        <div>
-          <span>A message from the creator...</span>
+        <span class="font-white hide">Credits</span>
+        <div id="congratulations">
+          <span class="font-white">Congratulations on earning the Infinity Gauntlet!</span>
         </div>
         <div>
-          <span>Congratulations on earning the Infinity Gauntlet!</span>
+          <img id="infinity-gauntlet" src="assets/images/infinity_gauntlet.png" alt="Infinity Gauntlet">
         </div>
-        <div>
-          <img src="assets/images/infinity_gauntlet.png" alt="Infinity Gauntlet">
-        </div>
-        <div>
-          <span>However, Thanos would like a word with you... in Avengers: Battle Royale 2.</span>
+        <div id="post-credits">
+          <span class="font-white">The Avengers will return to face Thanos in Avengers: Battle Royale 2.</span>
         </div>
       </div>
-    </div>
-    <div class="row">
-      <div class="col-6">
-        <button class="reset" data-value="reset">Reset</button>
-      </div>
+      <div class="col-6 reset-container">
+          <button class="reset" data-value="reset">Reset</button>
+        </div>
     </div>
   </div>
 

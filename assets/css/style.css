@@ -107,6 +107,23 @@ h1, h2, h3, h4, h5, h6 {
     margin: 0 auto;
 }
 
+#game-over .row .col-12 .label {
+    font-size: 40px;
+    margin-bottom: 20px;
+}
+
+#game-over .row .col-12 div {
+    margin-bottom: 20px;
+} 
+
+.reset-container {
+    margin: 0 auto;
+}
+
+#credits, #game-over {
+    margin: 100px auto;
+}
+
 #log-message {
     position: fixed;
     text-align: right;
@@ -114,6 +131,17 @@ h1, h2, h3, h4, h5, h6 {
     bottom: 12px;
     right: 12px;
     font-size: 14px;
+}
+
+#congratulations, #post-credits {
+    margin-bottom: 20px;
+}
+
+#infinity-gauntlet {
+    max-width: 200px;
+    max-height: 200px;
+    width: 100%;
+    margin-bottom: 20px;
 }
 
 .tooltip-arrow, #attack + .tooltip > .tooltip-inner {

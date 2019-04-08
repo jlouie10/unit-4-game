@@ -81,14 +81,14 @@ var abc = 1;
     var display = {
         characterSelection: function () {
             $("#arena").addClass("hide");
-            $("#character-select").removeClass("hide");
+            $("#character-select").removeClass("hide").addClass("animated zoomIn");
         },
         updateSelectedCharacter: function (id) { // Removes selected characters as options from the character menu
             $("#" + id).removeClass("select").addClass("remove");
         },
         arena: function () {
             $("#character-select").addClass("hide");
-            $("#arena").removeClass("hide");
+            $("#arena").removeClass("hide").addClass("animated zoomIn");;
         },
         updateModel: function (who, name, hp, hpt, model) { // Model is initialized once per round
             $("#" + who + "-name").html(name);
@@ -100,13 +100,16 @@ var abc = 1;
             $("#" + who + "-hp").html("HP: " + hp + " / " + hpt);
             $("#" + who + "-combat-text").html("<div class='animated fadeInUp'>" + damage + "</div>"); // creating a div resolved issue with Animate.css
         },
+        removePulse: function() {
+            $("#attack").removeClass("animated infinite pulse delay-3s");
+        },
         gameOver: function () {
             $("#arena").addClass("hide");
-            $("#game-over").removeClass("hide");
+            $("#game-over").removeClass("hide").addClass("animated fadeInDown");
         },
         credits: function () {
             $("#arena").addClass("hide");
-            $("#credits").removeClass("hide");
+            $("#credits").removeClass("hide").addClass("animated fadeInUp");
         },
         reset: function () {
             $("#game-over").addClass("hide");
@@ -287,6 +290,8 @@ var abc = 1;
                         ".");
                 }
             }
+
+            display.removePulse();
         }
     });
 
