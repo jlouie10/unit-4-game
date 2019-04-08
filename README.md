@@ -5,7 +5,7 @@ Fun and interactive game for web browsers with dynamically updated HTML pages us
 
 The Avengers are on a mission to locate the Infinity Gauntler! Choose a hero and survive against other heroes and villains to be the one who ends up with it.
 
-This game is abstracted into a state machine of 3 states (character selection, play match, game over). 
+This game is represented by its 3 states (character selection, play match, game over). 
 * Character selection
     * Initial state
     * Players choose their character and opponent
@@ -24,6 +24,8 @@ This game is abstracted into a state machine of 3 states (character selection, p
 Other features
 * Screen is cleared at each stage of the game
 * Damage dealt and taken will appear in the character model instead of a message
+* Experience is used to increase attack power after each attack instead of adding base attack power to allow for unique character profiles
+* Reach the credits and receive a message about the Avengers seen in every Marvel movie
 
 # Screenshots
 
@@ -37,20 +39,21 @@ Once the match starts, you will be transported to the Arena, where you will be a
 
 All experience gains carry over to the next match.
 
+Notes
+* A successful kill order is choose: Iron Man, defeat: Black Widow > Captain > Hulk.
+* An unsuccessful kill order is choose: Iron Man, defeat: Captain America or Hulk.
+* Although the instructions say not to create a character that is so powerful he can win without experience, the Hulk personifies that type of character (with abilities or other ways of calculating attack power, the Hulk can be defeated)
+
 ## Issues ([Feature], [Bug])
 
-* [Bug] When character model is loaded in Arena, hp section is removed (Fixed by re-adding on load)
-* [Feature] Refactor character stats
+* [Feature] Refactor character stats, unbalanced due to scaling nature of experience
 * [Feature] Add border when selecting a hero or villain on the Character Select Screen
 * [Feature] Add character model when hovered or selected on Character Select Screen
-* [Feature] Prevent health from reducing less than 0
 * [Feature] Add special abilities (Iron Man - fire cannon, Captain America - shield bash, Black Widow - increase speed, Hulk - go berserk)
 * [Feature] Add resource bar for special abilities
 * [Feature] Make attack and counter attack calculated (i.e. attack and counter attack are ranges, attack is multiplied times a modifier for Black Widow, experience impacts characters differently)
 * [Feature] Extend to more Marvel characters with cool abilities (Spider Man - shoot web, Black Panther - absorb damage & counter attack, Ant Man - shrink/grow, Dr. Strange - go back in time and heal)
 * [Feature] Make mobile responsive for phones
-* [Feature] Refactor game and character objects to efficiently handle player and opponent objects 
-
 
 # References
 
