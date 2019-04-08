@@ -147,3 +147,27 @@ h1, h2, h3, h4, h5, h6 {
 .tooltip-arrow, #attack + .tooltip > .tooltip-inner {
     background-color: #fff;
 }
+
+@media (max-width: 992px) {
+    body {
+        height: 100%;
+        background-size: 980px 730px;
+    }
+}
+
+@media (max-width: 768px) {
+    #player-name, #opponent-name {
+        font-size: 20px;
+    }
+    
+    #vs-label {
+        font-size: 40px;
+    }
+
+    #attack {
+        width: 50px;
+        height: 50px;
+        font-size: 24px;
+        border-width: 4px;
+    }
+}
