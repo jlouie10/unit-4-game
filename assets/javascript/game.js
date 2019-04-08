@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    
+var abc = 1;
     var game = {
         status: "select character",
         player: {
@@ -26,7 +26,7 @@ $(document).ready(function () {
             },
             selected: false
         },
-        defeated: 0,
+        defeated: 0, // Tracks characters player has defeated
         getCharacter: function (who, id, name, hp, ap, cap, xp) {
             this[who].id = id;
             this[who].name = name;
@@ -56,7 +56,6 @@ $(document).ready(function () {
             }
         },
         performAction: function (action) {
-
             if (action === "attack") {
                 var currentAttack = this.player.stats.attackPower;
                 this.player.stats.attackPower += this.player.stats.experience;
@@ -64,13 +63,14 @@ $(document).ready(function () {
                 return currentAttack;
             }
         },
-        reset: function (what, health) {
-            if (what === "player") {
+        reset: function (type, health) {
+            if (type === "player") {
                 this.player.stats.health = health;
                 this.opponent.selected = false;
             }
-            else if (what === "game") {
+            else if (type === "game") {
                 this.status = "select character";
+
                 this.player.selected = false;
                 this.opponent.selected = false;
                 this.defeated = 0;
@@ -84,8 +84,7 @@ $(document).ready(function () {
             $("#character-select").removeClass("hide");
         },
         updateSelectedCharacter: function (id) { // Removes selected characters as options from the character menu
-            $("#" + id).removeClass("select");
-            $("#" + id).addClass("remove");
+            $("#" + id).removeClass("select").addClass("remove");
         },
         arena: function () {
             $("#character-select").addClass("hide");
@@ -99,7 +98,7 @@ $(document).ready(function () {
         },
         updateFrame: function (who, hp, hpt, damage) { // Health and combat text are updated
             $("#" + who + "-hp").html("HP: " + hp + " / " + hpt);
-            $("#" + who + "-combat-text").html(damage);
+            $("#" + who + "-combat-text").html("<div class='animated fadeInUp'>" + damage + "</div>"); // creating a div resolved issue with Animate.css
         },
         gameOver: function () {
             $("#arena").addClass("hide");
@@ -109,12 +108,11 @@ $(document).ready(function () {
             $("#arena").addClass("hide");
             $("#credits").removeClass("hide");
         },
-        reset: function() {
+        reset: function () {
             $("#game-over").addClass("hide");
             $("#credits").addClass("hide");
 
-            $("#character-menu .col-3 div").addClass("select");
-            $("#character-menu .col-3 div").removeClass("remove");
+            $("#character-menu .col-3 div").addClass("select").removeClass("remove");
 
             this.characterSelection();
         }
@@ -178,6 +176,8 @@ $(document).ready(function () {
             var key = $(this).attr("data-value");
 
             if (game.player.selected === false) {
+
+                // Select player character
                 game.getCharacter("player", key,
                     character[key].name,
                     character[key].stats.health,
@@ -185,13 +185,18 @@ $(document).ready(function () {
                     character[key].stats.counterAttackPower,
                     character[key].stats.experience);
 
+                // Update player model in the arena
                 display.updateModel("player",
                     character[key].name,
                     character[key].stats.health,
                     character[key].stats.health,
                     character[key].model);
+
+                message("Please select your opponent");
             }
             else {
+
+                // Select opponent
                 game.getCharacter("opponent", key,
                     character[key].name,
                     character[key].stats.health,
@@ -199,6 +204,7 @@ $(document).ready(function () {
                     character[key].stats.counterAttackPower,
                     character[key].stats.experience);
 
+                // Update opponent model in the arena
                 display.updateModel("opponent",
                     character[key].name,
                     character[key].stats.health,
@@ -207,15 +213,17 @@ $(document).ready(function () {
 
                 game.status = "play match";
                 display.arena();
+
+                message(game.player.name + ", get ready to attack " + game.opponent.name);
             }
 
+            // Removes selection from character menu
             display.updateSelectedCharacter(character[key].id);
         }
     });
 
     $("#attack").on("click", function () {
 
-        // Only execute contents during a match
         if (game.status === "play match") {
 
             var attack = game.performAction("attack");
@@ -266,6 +274,18 @@ $(document).ready(function () {
                     game.status = "game over";
                     display.gameOver();
                 }
+                else {
+                    message(game.player.name +
+                        " attacked " +
+                        game.opponent.name +
+                        " for " +
+                        attack +
+                        ", and " +
+                        game.opponent.name +
+                        " countered for " +
+                        game.opponent.stats.counterAttackPower +
+                        ".");
+                }
             }
         }
     });
@@ -274,4 +294,13 @@ $(document).ready(function () {
         game.reset("game");
         display.reset();
     });
+
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    })
+
+    // This function displays a helpful message to the player
+    function message(msg) {
+        $("#log-message").html("<span>" + msg + "</span>");
+    }
 });

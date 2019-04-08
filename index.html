@@ -10,6 +10,9 @@
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
     integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
+  <!-- Animate.css -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
+
   <!-- CSS -->
   <link rel="stylesheet" type="text/css" href="assets/css/style.css">
 
@@ -31,10 +34,10 @@
 <body>
   <header></header>
   <div id="character-select" class="container">
-    <div id="character-label" class="row label">
+    <div id="character-select-label" class="row">
       <div class="col-12">
         <h1>
-          <span>Character Select</span>
+          <span class="font-avengers font-white">Character Select</span>
         </h1>
       </div>
     </div>
@@ -67,33 +70,34 @@
   </div>
 
   <div id="arena" class="container hide">
-    <div id="arena-label" class="row label">
+    <div id="arena-label" class="row hide">
       <div class="col-12">
         <h1>
-          <span>Arena</span>
+          <span class="font-white">Arena</span>
         </h1>
       </div>
     </div>
     <div id="ring" class="row">
       <div id="player" class="col-5">
-        <div id="player-model"></div>
-        <div id="player-name"></div>
-        <div id="player-hp"></div>
+        <div id="player-model" class="font-white"></div>
+        <div id="player-name" class="font-avengers font-white"></div>
+        <div id="player-hp" class="font-white"></div>
         <div id="player-combat-text"></div>
       </div>
-      <div id="vs-label" class="col-2">
+      <div id="vs-label" class="col-2 font-white">
         <span>VS</span>
       </div>
       <div id="opponent" class="col-5">
-        <div id="opponent-model"></div>
-        <div id="opponent-name"></div>
-        <div id="opponent-hp"></div>
+        <div id="opponent-model" class="font-white"></div>
+        <div id="opponent-name" class="font-avengers font-white"></div>
+        <div id="opponent-hp" class="font-white"></div>
         <div id="opponent-combat-text"></div>
       </div>
     </div>
     <div class="row">
       <div id="action-container" class="col-2">
-        <button id="attack" data-value="attack"><i class="fas fa-hand-rock"></i></button>
+        <button id="attack" data-value="attack" data-toggle="tooltip" data-placement="top"
+          title="Attack your opponent"><i class="fas fa-hand-rock"></i></button>
         <span id="message"></span>
       </div>
     </div>
@@ -102,10 +106,10 @@
   <div id="game-over" class="container hide">
     <div class="row">
       <div class="col-12">
-        <span class="label">Game Over</span>
+        <span class="font-white">Game Over</span>
         <div>
-            Try again
-          </div>
+          Try again
+        </div>
       </div>
     </div>
     <div class="row">
@@ -118,9 +122,18 @@
   <div id="credits" class="container hide">
     <div class="row">
       <div class="col-12">
-        <span class="label">Credits</span>
+        <span class="font-white">Credits</span>
         <div>
-          Congratulations on winning the Infinity Gauntlet!
+          <span>A message from the creator...</span>
+        </div>
+        <div>
+          <span>Congratulations on earning the Infinity Gauntlet!</span>
+        </div>
+        <div>
+          <img src="assets/images/infinity_gauntlet.png" alt="Infinity Gauntlet">
+        </div>
+        <div>
+          <span>However, Thanos would like a word with you... in Avengers: Battle Royale 2.</span>
         </div>
       </div>
     </div>
@@ -133,8 +146,8 @@
 
   <div id="log" class="container">
     <div class="row">
-      <div id="log-message" class="col-12">
-        <span></span>
+      <div id="log-message" class="col-12 font-white">
+        <span>Please select your character</span>
       </div>
     </div>
   </div>
@@ -144,6 +157,8 @@
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
     integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
     crossorigin="anonymous"></script>
+  <!-- <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script> -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
     integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
     crossorigin="anonymous"></script>

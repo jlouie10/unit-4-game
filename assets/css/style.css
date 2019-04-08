@@ -14,6 +14,10 @@ h1, h2, h3, h4, h5, h6 {
     font-family: 'Anton', sans-serif;
 }
 
+.font-white {
+    color: #fff;
+}
+
 .hide {
     display: none;
 }
@@ -26,16 +30,11 @@ h1, h2, h3, h4, h5, h6 {
     position: relative;
     max-width: 960px;
     height: 480px;
-    margin: 40px auto;
+    margin: 100px auto;
 }
 
-#character-label, #arena-label, .label {
-    color: #fff;
-    /* position: absolute;
-    bottom: 50%;
-    left: 50%;
-    margin-bottom: -28px;
-    margin-left: -211.5px; */
+#character-select-label h1 span {
+    text-transform: uppercase;
 }
 
 #character-menu {
@@ -49,13 +48,10 @@ h1, h2, h3, h4, h5, h6 {
     max-width: 75px;
     max-height: 75px;
 }
+
 #character-menu .col-3 {
     border: 1px solid transparent;
     padding: 0;
-}
-
-#player-name, #player-hp, #opponent-name, #opponent-hp {
-    color: #fff;
 }
 
 #player-model img, #opponent-model img {
@@ -63,12 +59,17 @@ h1, h2, h3, h4, h5, h6 {
     width: 100%;
 }
 
+#player-name, #opponent-name {
+    font-size: 32px;
+}
+
 #player-combat-text, #opponent-combat-text {
     position: absolute;
-    top: 25%;
+    top: -20%;
     left: 50%;
     margin-left: -8px;
     font-size: 40px;
+    font-weight: 600;
 }
 
 #player-combat-text {
@@ -81,19 +82,40 @@ h1, h2, h3, h4, h5, h6 {
 
 #vs-label {
     color: #fff;
-    font-size: 40px;
+    font-size: 100px;
     margin-top: 140px;
 }
 
 #attack {
-    width: 50px;
-    height: 50px;
-    font-size: 24px;
+    width: 75px;
+    height: 75px;
+    font-size: 40px;
     padding: 0;
-    border-radius: 8px;
+    border-radius: 12px;
     box-shadow: 0 13px 27px -5px rgba(50,50,93,.25), 0 8px 16px -8px rgba(0,0,0,.3), 0 -6px 16px -6px rgba(0,0,0,.025);
+    border: 6px solid #fff;
+    background-color: #333;
+    color: #fff;
+}
+
+#attack:hover {
+    background-color: blue;
+    box-shadow: none;
 }
 
 #action-container {
     margin: 0 auto;
+}
+
+#log-message {
+    position: fixed;
+    text-align: right;
+    display: fixed;
+    bottom: 12px;
+    right: 12px;
+    font-size: 14px;
+}
+
+.tooltip-arrow, #attack + .tooltip > .tooltip-inner {
+    background-color: #fff;
 }
